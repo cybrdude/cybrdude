@@ -1,0 +1,36 @@
+name: Update Threat Ops Center
+
+on:
+  schedule:
+    # Runs daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  update-ops-center:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate Ops Center SVG
+        env:
+          CENSYS_API_ID: ${{ secrets.CENSYS_API_ID }}
+          CENSYS_API_SECRET: ${{ secrets.CENSYS_API_SECRET }}
+          OUTPUT_PATH: assets/threat-ops.svg
+        run: python scripts/generate_ops_center.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/threat-ops.svg
+          git diff --staged --quiet || (git commit -m "chore: update threat ops center [$(date -u +%Y-%m-%d)]" && git push)
