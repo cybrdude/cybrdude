@@ -5,7 +5,7 @@ Pulls real-time internet scanning data from the Censys Search API
 and renders a dark-themed SVG operations dashboard for GitHub profile README.
 
 Requires: CENSYS_API_ID and CENSYS_API_SECRET as environment variables.
-Free tier: 250 queries/month — this action uses ~6 queries per run.
+Research Tier: (Impact - Minial) this action uses ~6 queries per run.
 """
 
 import json
