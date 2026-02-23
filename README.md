@@ -41,25 +41,13 @@ Cybersecurity Practitioner, Vulnerability Researcher, and open-source security c
 <div align="center">
 
 <a href="https://github.com/cybrdude">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api?username=cybrdude&show_icons=true&bg_color=0D1117&hide_border=true&icon_color=E63946&title_color=E63946&text_color=8B949E&ring_color=E63946" />
-    <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api?username=cybrdude&show_icons=true&bg_color=f6f8fa&hide_border=true&icon_color=E63946&title_color=E63946&text_color=24292f&ring_color=E63946" />
-    <img height="170em" src="https://github-readme-stats.vercel.app/api?username=cybrdude&show_icons=true&bg_color=0D1117&hide_border=true&icon_color=E63946&title_color=E63946&text_color=8B949E&ring_color=E63946" />
-  </picture>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=cybrdude&layout=compact&bg_color=0D1117&hide_border=true&title_color=E63946&text_color=8B949E" />
-    <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=cybrdude&layout=compact&bg_color=f6f8fa&hide_border=true&title_color=E63946&text_color=24292f" />
-    <img height="170em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=cybrdude&layout=compact&bg_color=0D1117&hide_border=true&title_color=E63946&text_color=8B949E" />
-  </picture>
+  <img height="170em" src="https://github-readme-stats.vercel.app/api?username=cybrdude&show_icons=true&bg_color=0D1117&hide_border=true&icon_color=E63946&title_color=E63946&text_color=8B949E&ring_color=E63946" />
+  <img height="170em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=cybrdude&layout=compact&bg_color=0D1117&hide_border=true&title_color=E63946&text_color=8B949E" />
 </a>
 
 <br/>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-streak-stats.herokuapp.com/?user=cybrdude&background=0D1117&hide_border=true&stroke=E63946&ring=E63946&fire=FF8C00&currStreakLabel=E63946&sideLabels=8B949E&currStreakNum=C9D1D9&sideNums=C9D1D9&dates=555555" />
-  <source media="(prefers-color-scheme: light)" srcset="https://github-readme-streak-stats.herokuapp.com/?user=cybrdude&background=f6f8fa&hide_border=true&stroke=E63946&ring=E63946&fire=FF8C00&currStreakLabel=E63946&sideLabels=57606a&currStreakNum=24292f&sideNums=24292f&dates=888888" />
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=cybrdude&background=0D1117&hide_border=true&stroke=E63946&ring=E63946&fire=FF8C00&currStreakLabel=E63946&sideLabels=8B949E&currStreakNum=C9D1D9&sideNums=C9D1D9&dates=555555" />
-</picture>
+<img src="https://streak-stats.demolab.com/?user=cybrdude&background=0D1117&hide_border=true&stroke=E63946&ring=E63946&fire=FF8C00&currStreakLabel=E63946&sideLabels=8B949E&currStreakNum=C9D1D9&sideNums=C9D1D9&dates=555555" />
 
 <br/><br/>
 
