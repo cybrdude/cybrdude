@@ -1,57 +1,83 @@
 #!/usr/bin/env python3
 """
-Censys Global Threat Ops Center — SVG Generator
-Pulls real-time internet scanning data from the Censys Search API
+Censys Global Threat Ops Center — SVG Generator (v3)
+Pulls real-time internet scanning data from the Censys Search API v2
 and renders a dark-themed SVG operations dashboard for GitHub profile README.
 
-Requires: CENSYS_API_ID and CENSYS_API_SECRET as environment variables.
-Research Tier: (Impact - Minial) this action uses ~6 queries per run.
+API Spec: https://search.censys.io/api
+Endpoint: GET https://search.censys.io/api/v2/hosts/aggregate
+Auth:     HTTP Basic Auth (API_ID:API_SECRET)
+Params:   q (query string), field (required), num_buckets (optional, default 50)
+
+Requires: CENSYS_API_ID and CENSYS_API_SECRET environment variables.
 """
 
 import json
 import os
 import sys
 import urllib.request
+import urllib.parse
 import urllib.error
 import base64
 from datetime import datetime, timezone
 
 CENSYS_API_ID = os.environ.get("CENSYS_API_ID", "")
 CENSYS_API_SECRET = os.environ.get("CENSYS_API_SECRET", "")
+
+# Base URL per OpenAPI spec: servers[0].url + path
 AGGREGATE_URL = "https://search.censys.io/api/v2/hosts/aggregate"
 
-def censys_aggregate(query: str, field: str, num_buckets: int = 10) -> dict:
-    """Call the Censys v2 hosts aggregate endpoint."""
-    payload = json.dumps({
-        "query": query,
+
+def censys_aggregate(query: str, field: str, num_buckets: int = 50) -> dict:
+    """
+    Call GET /v2/hosts/aggregate with query parameters.
+
+    Per the OpenAPI spec (operationId: aggregateHosts):
+      - Method: GET
+      - Params: q, field (required), num_buckets, virtual_hosts
+      - Auth: HTTP Basic (API_ID:API_SECRET)
+    """
+    params = urllib.parse.urlencode({
+        "q": query,
         "field": field,
         "num_buckets": num_buckets,
-    }).encode()
-    creds = base64.b64encode(f"{CENSYS_API_ID}:{CENSYS_API_SECRET}".encode()).decode()
-    req = urllib.request.Request(
-        AGGREGATE_URL,
-        data=payload,
-        headers={
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": f"Basic {creds}",
-        },
-        method="POST",
-    )
+    })
+    url = f"{AGGREGATE_URL}?{params}"
+
+    creds = base64.b64encode(
+        f"{CENSYS_API_ID}:{CENSYS_API_SECRET}".encode()
+    ).decode()
+
+    req = urllib.request.Request(url)
+    req.add_header("Accept", "application/json")
+    req.add_header("Authorization", f"Basic {creds}")
+    # Explicitly ensure GET — urllib defaults to GET when no data is set,
+    # but we set it explicitly for clarity.
+    req.method = "GET"
+
+    print(f"    [>] GET {AGGREGATE_URL}?q={query[:50]}...&field={field}&num_buckets={num_buckets}")
+
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
-            return json.loads(resp.read().decode())
+            data = json.loads(resp.read().decode())
+            total = data.get("result", {}).get("total", "?")
+            buckets = len(data.get("result", {}).get("buckets", []))
+            print(f"    [+] OK — total={total}, buckets={buckets}")
+            return data
     except urllib.error.HTTPError as e:
-        print(f"[!] Censys API error {e.code}: {e.read().decode()}", file=sys.stderr)
+        body = e.read().decode()
+        print(f"    [!] HTTP {e.code}: {body}", file=sys.stderr)
         return {}
     except Exception as e:
-        print(f"[!] Request failed: {e}", file=sys.stderr)
+        print(f"    [!] Request failed: {e}", file=sys.stderr)
         return {}
 
+
 def get_total_hosts(query: str) -> int:
-    """Get total host count for a query via aggregate."""
+    """Get total host count for a query via aggregate (uses 1 bucket to minimize data)."""
     result = censys_aggregate(query, "location.country_code", 1)
     return result.get("result", {}).get("total", 0)
+
 
 def format_count(n: int) -> str:
     """Format large numbers: 1234567 -> 1.23M"""
@@ -63,33 +89,61 @@ def format_count(n: int) -> str:
         return f"{n / 1_000:.1f}K"
     return str(n)
 
+
 def fetch_metrics() -> dict:
-    """Fetch all metrics from Censys."""
-    print("[*] Fetching global host metrics from Censys...")
+    """Fetch all metrics from Censys using the aggregate endpoint."""
+    print("[*] Fetching global host metrics from Censys Search API v2...")
+    print(f"[*] Base URL: {AGGREGATE_URL}")
+    print(f"[*] API ID: {CENSYS_API_ID[:6]}...{CENSYS_API_ID[-4:]}" if len(CENSYS_API_ID) > 10 else "[*] API ID: (short)")
 
-    # Total observable hosts
-    total = get_total_hosts("services.service_name: *")
-
-    # Regional breakdown by continent
-    region_result = censys_aggregate("services.service_name: *", "location.continent", 10)
-    region_buckets = {b["key"]: b["count"] for b in region_result.get("result", {}).get("buckets", [])}
+    # Query 1: Regional breakdown by continent — also gives us total host count
+    print("\n[1/4] Regional breakdown by continent")
+    region_result = censys_aggregate(
+        "services.service_name: *",
+        "location.continent",
+        10
+    )
+    region_data = region_result.get("result", {})
+    total = region_data.get("total", 0)
+    region_buckets = {b["key"]: b["count"] for b in region_data.get("buckets", [])}
 
     na_count = region_buckets.get("North America", 0)
     eu_count = region_buckets.get("Europe", 0)
     ap_count = region_buckets.get("Asia", 0)
 
-    # Top exposed services
-    svc_result = censys_aggregate("services.service_name: *", "services.service_name", 5)
-    top_services = [(b["key"], b["count"]) for b in svc_result.get("result", {}).get("buckets", [])]
+    # Query 2: Top internet services
+    print("\n[2/4] Top internet services")
+    svc_result = censys_aggregate(
+        "services.service_name: *",
+        "services.service_name",
+        5
+    )
+    top_services = [
+        (b["key"], b["count"])
+        for b in svc_result.get("result", {}).get("buckets", [])
+    ]
 
-    # Exposed critical services (potential attack surface)
+    # Query 3: Exposed RDP
+    print("\n[3/4] Exposed RDP hosts")
     rdp_count = get_total_hosts("services.service_name: RDP")
+
+    # Query 4: Exposed SMB
+    print("\n[4/4] Exposed SMB hosts")
     smb_count = get_total_hosts("services.service_name: SMB")
-    telnet_count = get_total_hosts("services.service_name: TELNET")
+
+    # Derive telnet from top services if present, otherwise skip (save query)
+    telnet_count = 0
+    for name, count in top_services:
+        if name.upper() == "TELNET":
+            telnet_count = count
+            break
+    if telnet_count == 0:
+        print("\n[bonus] Exposed TELNET hosts")
+        telnet_count = get_total_hosts("services.service_name: TELNET")
 
     now = datetime.now(timezone.utc)
 
-    return {
+    metrics = {
         "total_hosts": total,
         "na_hosts": na_count,
         "eu_hosts": eu_count,
@@ -102,6 +156,11 @@ def fetch_metrics() -> dict:
         "date_short": now.strftime("%d %b %Y"),
     }
 
+    print(f"\n[+] Results: total={format_count(total)} NA={format_count(na_count)} EU={format_count(eu_count)} AP={format_count(ap_count)}")
+    print(f"[+] Attack surface: RDP={format_count(rdp_count)} SMB={format_count(smb_count)} TELNET={format_count(telnet_count)}")
+    return metrics
+
+
 def make_bar(fraction: float, width: int = 180) -> str:
     """Create an SVG rect bar."""
     filled = max(4, int(fraction * width))
@@ -110,6 +169,7 @@ def make_bar(fraction: float, width: int = 180) -> str:
         f'<rect x="0" y="0" width="{filled}" height="10" rx="2" fill="url(#barGrad)"/>'
     )
 
+
 def generate_svg(m: dict) -> str:
     """Generate the dark-themed ops center SVG."""
     total_fmt = format_count(m["total_hosts"])
@@ -117,17 +177,10 @@ def generate_svg(m: dict) -> str:
     eu_fmt = format_count(m["eu_hosts"])
     ap_fmt = format_count(m["ap_hosts"])
 
-    # Fractions for bars (relative to total)
-    na_frac = m["na_hosts"] / max(m["total_hosts"], 1)
-    eu_frac = m["eu_hosts"] / max(m["total_hosts"], 1)
-    ap_frac = m["ap_hosts"] / max(m["total_hosts"], 1)
-
-    # Top services formatted
-    svc_lines = ""
-    for i, (name, count) in enumerate(m["top_services"][:5]):
-        y = 284 + i * 18
-        svc_lines += f'<text x="40" y="{y}" class="mono dim">▸ {name:<12s}</text>'
-        svc_lines += f'<text x="220" y="{y}" class="mono accent">{format_count(count)}</text>'
+    max_region = max(m["na_hosts"], m["eu_hosts"], m["ap_hosts"], 1)
+    na_frac = m["na_hosts"] / max_region
+    eu_frac = m["eu_hosts"] / max_region
+    ap_frac = m["ap_hosts"] / max_region
 
     rdp_fmt = format_count(m["rdp_exposed"])
     smb_fmt = format_count(m["smb_exposed"])
@@ -167,12 +220,6 @@ def generate_svg(m: dict) -> str:
       .stat-label {{ font-size: 9px; fill: #555577; letter-spacing: 1px; }}
       .warning {{ font-size: 10px; fill: #ff6b35; }}
       .live {{ font-size: 9px; fill: #00e676; }}
-      .scanline {{ animation: scanline 4s linear infinite; }}
-      @keyframes scanline {{
-        0% {{ opacity: 0.03; transform: translateY(0); }}
-        50% {{ opacity: 0.06; }}
-        100% {{ opacity: 0.03; transform: translateY(520px); }}
-      }}
     </style>
   </defs>
 
@@ -180,10 +227,7 @@ def generate_svg(m: dict) -> str:
   <rect width="820" height="520" rx="8" fill="url(#bgGrad)"/>
   <rect width="820" height="520" rx="8" fill="none" stroke="url(#borderGrad)" stroke-width="1.5"/>
 
-  <!-- Scan line effect -->
-  <rect class="scanline" width="820" height="2" fill="#e63946" opacity="0.04"/>
-
-  <!-- Grid pattern overlay -->
+  <!-- Grid overlay -->
   <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
     <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1a3a" stroke-width="0.3"/>
   </pattern>
@@ -196,7 +240,7 @@ def generate_svg(m: dict) -> str:
   <path d="M 800 518 L 812 518 Q 818 518 818 512 L 818 500" fill="none" stroke="#e63946" stroke-width="1.5" opacity="0.8"/>
 
   <!-- Header -->
-  <text x="410" y="38" text-anchor="middle" class="mono title" filter="url(#glow)">◆  GLOBAL THREAT OPERATIONS CENTER  ◆</text>
+  <text x="410" y="38" text-anchor="middle" class="mono title" filter="url(#glow)">&#9670;  GLOBAL THREAT OPERATIONS CENTER  &#9670;</text>
   <text x="410" y="54" text-anchor="middle" class="mono subtitle">CENSYS INTERNET INTELLIGENCE  //  {m["timestamp"]}</text>
 
   <!-- Live indicator -->
@@ -205,38 +249,32 @@ def generate_svg(m: dict) -> str:
   </circle>
   <text x="40" y="50" class="mono live">LIVE</text>
 
-  <!-- Divider -->
   <line x1="30" y1="66" x2="790" y2="66" stroke="#2a2a4a" stroke-width="0.5"/>
 
-  <!-- Total hosts stat -->
+  <!-- Total hosts -->
   <text x="410" y="100" text-anchor="middle" class="mono stat-big" filter="url(#glow)">{total_fmt}</text>
   <text x="410" y="116" text-anchor="middle" class="mono stat-label">OBSERVABLE HOSTS WORLDWIDE</text>
 
-  <!-- Divider -->
   <line x1="30" y1="132" x2="790" y2="132" stroke="#2a2a4a" stroke-width="0.5"/>
 
-  <!-- LEFT COLUMN: Regional Coverage -->
-  <text x="40" y="156" class="mono section">◈ REGIONAL COVERAGE</text>
+  <!-- LEFT: Regional Coverage -->
+  <text x="40" y="156" class="mono section">&#9672; REGIONAL COVERAGE</text>
 
-  <!-- North America -->
   <text x="40" y="182" class="mono label">NORTH AMERICA</text>
   <text x="290" y="182" class="mono value" text-anchor="end">{na_fmt}</text>
   <g transform="translate(40, 188)">{make_bar(na_frac)}</g>
 
-  <!-- Europe -->
   <text x="40" y="216" class="mono label">EUROPE</text>
   <text x="290" y="216" class="mono value" text-anchor="end">{eu_fmt}</text>
   <g transform="translate(40, 222)">{make_bar(eu_frac)}</g>
 
-  <!-- Asia-Pacific -->
   <text x="40" y="250" class="mono label">ASIA-PACIFIC</text>
   <text x="290" y="250" class="mono value" text-anchor="end">{ap_fmt}</text>
   <g transform="translate(40, 256)">{make_bar(ap_frac)}</g>
 
-  <!-- RIGHT COLUMN: Exposed Attack Surface -->
-  <text x="440" y="156" class="mono section">◈ EXPOSED ATTACK SURFACE</text>
+  <!-- RIGHT: Exposed Attack Surface -->
+  <text x="440" y="156" class="mono section">&#9672; EXPOSED ATTACK SURFACE</text>
 
-  <!-- Critical services boxes -->
   <rect x="440" y="170" width="160" height="60" rx="4" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/>
   <text x="520" y="192" text-anchor="middle" class="mono bright">{rdp_fmt}</text>
   <text x="520" y="206" text-anchor="middle" class="mono dim">RDP EXPOSED</text>
@@ -246,14 +284,13 @@ def generate_svg(m: dict) -> str:
   <text x="695" y="206" text-anchor="middle" class="mono dim">SMB EXPOSED</text>
 
   <rect x="440" y="240" width="335" height="30" rx="4" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/>
-  <text x="460" y="260" class="mono warning">⚠ TELNET STILL ACTIVE:</text>
+  <text x="460" y="260" class="mono warning">&#9888; TELNET STILL ACTIVE:</text>
   <text x="670" y="260" class="mono bright">{telnet_fmt} HOSTS</text>
 
-  <!-- Bottom section divider -->
   <line x1="30" y1="290" x2="790" y2="290" stroke="#2a2a4a" stroke-width="0.5"/>
 
-  <!-- Bottom: Active Campaigns -->
-  <text x="40" y="314" class="mono section">◈ ACTIVE CAMPAIGNS</text>
+  <!-- Bottom left: Active Campaigns -->
+  <text x="40" y="314" class="mono section">&#9672; ACTIVE CAMPAIGNS</text>
 
   <rect x="40" y="326" width="340" height="36" rx="4" fill="#1a1a2e" stroke="#e63946" stroke-width="0.5" opacity="0.8"/>
   <text x="55" y="349" class="mono accent">CVE-2026-1731</text>
@@ -271,10 +308,10 @@ def generate_svg(m: dict) -> str:
   <text x="345" y="437" class="mono warning" text-anchor="end">HIGH</text>
 
   <!-- Bottom right: Top Services -->
-  <text x="440" y="314" class="mono section">◈ TOP INTERNET SERVICES</text>
+  <text x="440" y="314" class="mono section">&#9672; TOP INTERNET SERVICES</text>
   <g>
     {"".join(
-        f'<text x="460" y="{338 + i * 22}" class="mono dim">▸ {name}</text>'
+        f'<text x="460" y="{338 + i * 22}" class="mono dim">&#9656; {name}</text>'
         f'<text x="700" y="{338 + i * 22}" class="mono value" text-anchor="end">{format_count(count)}</text>'
         for i, (name, count) in enumerate(m["top_services"][:5])
     )}
@@ -282,7 +319,7 @@ def generate_svg(m: dict) -> str:
 
   <!-- Footer -->
   <line x1="30" y1="470" x2="790" y2="470" stroke="#2a2a4a" stroke-width="0.5"/>
-  <text x="410" y="492" text-anchor="middle" class="mono dim">DATA SOURCE: CENSYS UNIVERSAL INTERNET DATASET  ·  UPDATED {m["date_short"]}</text>
+  <text x="410" y="492" text-anchor="middle" class="mono dim">DATA SOURCE: CENSYS UNIVERSAL INTERNET DATASET  &#183;  UPDATED {m["date_short"]}</text>
   <text x="410" y="508" text-anchor="middle" class="mono dim">cybrdude // netguard24-7.com // attack surface management</text>
 
 </svg>'''
@@ -305,7 +342,7 @@ def generate_fallback_svg() -> str:
   </defs>
   <rect width="820" height="200" rx="8" fill="url(#bgGrad)"/>
   <rect width="820" height="200" rx="8" fill="none" stroke="#e63946" stroke-width="1" opacity="0.4"/>
-  <text x="410" y="80" text-anchor="middle" class="mono" font-size="14" fill="#e63946" letter-spacing="3">◆  GLOBAL THREAT OPERATIONS CENTER  ◆</text>
+  <text x="410" y="80" text-anchor="middle" class="mono" font-size="14" fill="#e63946" letter-spacing="3">&#9670;  GLOBAL THREAT OPERATIONS CENTER  &#9670;</text>
   <text x="410" y="110" text-anchor="middle" class="mono" font-size="11" fill="#555577">AWAITING CENSYS API CONFIGURATION</text>
   <text x="410" y="140" text-anchor="middle" class="mono" font-size="10" fill="#3a3a5a">{ts}</text>
 </svg>'''
@@ -319,12 +356,13 @@ if __name__ == "__main__":
         metrics = fetch_metrics()
         if metrics.get("total_hosts", 0) > 0:
             svg = generate_svg(metrics)
-            print(f"[+] Generated ops center with {format_count(metrics['total_hosts'])} total hosts")
+            print(f"\n[+] Generated ops center: {format_count(metrics['total_hosts'])} total hosts")
         else:
-            print("[!] No data returned from Censys, generating fallback")
+            print("\n[!] No data returned from Censys, generating fallback")
             svg = generate_fallback_svg()
     else:
-        print("[!] No Censys API credentials found, generating fallback SVG")
+        print("[!] No CENSYS_API_ID / CENSYS_API_SECRET env vars found")
+        print("[!] Generating fallback SVG")
         svg = generate_fallback_svg()
 
     with open(output_path, "w") as f:
