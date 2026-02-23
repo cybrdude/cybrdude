@@ -1,16 +1,133 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="820" height="200" viewBox="0 0 820 200">
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="520" viewBox="0 0 820 520">
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#0a0a1a"/>
-      <stop offset="100%" style="stop-color:#0d0d24"/>
+      <stop offset="50%" style="stop-color:#0d0d24"/>
+      <stop offset="100%" style="stop-color:#0a0a1a"/>
     </linearGradient>
+    <linearGradient id="barGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e63946"/>
+      <stop offset="100%" style="stop-color:#ff6b35"/>
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e63946;stop-opacity:0.6"/>
+      <stop offset="50%" style="stop-color:#ff6b35;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#e63946;stop-opacity:0.6"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
     <style>
-      .mono { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+      .mono { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', monospace; }
+      .title { font-size: 13px; fill: #e63946; letter-spacing: 3px; font-weight: 700; }
+      .subtitle { font-size: 10px; fill: #555577; letter-spacing: 1px; }
+      .label { font-size: 11px; fill: #8888aa; }
+      .value { font-size: 11px; fill: #e0e0f0; font-weight: 600; }
+      .accent { font-size: 11px; fill: #e63946; font-weight: 600; }
+      .dim { font-size: 10px; fill: #6a6a8a; }
+      .bright { font-size: 12px; fill: #ff6b35; font-weight: 700; }
+      .section { font-size: 10px; fill: #e63946; letter-spacing: 2px; font-weight: 600; }
+      .stat-big { font-size: 22px; fill: #e0e0f0; font-weight: 700; }
+      .stat-label { font-size: 9px; fill: #555577; letter-spacing: 1px; }
+      .warning { font-size: 10px; fill: #ff6b35; }
+      .live { font-size: 9px; fill: #00e676; }
     </style>
   </defs>
-  <rect width="820" height="200" rx="8" fill="url(#bgGrad)"/>
-  <rect width="820" height="200" rx="8" fill="none" stroke="#e63946" stroke-width="1" opacity="0.4"/>
-  <text x="410" y="80" text-anchor="middle" class="mono" font-size="14" fill="#e63946" letter-spacing="3">◆  GLOBAL THREAT OPERATIONS CENTER  ◆</text>
-  <text x="410" y="110" text-anchor="middle" class="mono" font-size="11" fill="#555577">AWAITING CENSYS API CONFIGURATION</text>
-  <text x="410" y="140" text-anchor="middle" class="mono" font-size="10" fill="#3a3a5a">2026-02-23 06:56 UTC</text>
+
+  <!-- Background -->
+  <rect width="820" height="520" rx="8" fill="url(#bgGrad)"/>
+  <rect width="820" height="520" rx="8" fill="none" stroke="url(#borderGrad)" stroke-width="1.5"/>
+
+  <!-- Grid overlay -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1a3a" stroke-width="0.3"/>
+  </pattern>
+  <rect width="820" height="520" fill="url(#grid)" opacity="0.5"/>
+
+  <!-- Corner decorations -->
+  <path d="M 2 20 L 2 8 Q 2 2 8 2 L 20 2" fill="none" stroke="#e63946" stroke-width="1.5" opacity="0.8"/>
+  <path d="M 800 2 L 812 2 Q 818 2 818 8 L 818 20" fill="none" stroke="#e63946" stroke-width="1.5" opacity="0.8"/>
+  <path d="M 2 500 L 2 512 Q 2 518 8 518 L 20 518" fill="none" stroke="#e63946" stroke-width="1.5" opacity="0.8"/>
+  <path d="M 800 518 L 812 518 Q 818 518 818 512 L 818 500" fill="none" stroke="#e63946" stroke-width="1.5" opacity="0.8"/>
+
+  <!-- Header -->
+  <text x="410" y="38" text-anchor="middle" class="mono title" filter="url(#glow)">&#9670;  GLOBAL THREAT OPERATIONS CENTER  &#9670;</text>
+  <text x="410" y="54" text-anchor="middle" class="mono subtitle">CENSYS INTERNET INTELLIGENCE  //  2026-02-23 07:03 UTC</text>
+
+  <!-- Live indicator -->
+  <circle cx="30" cy="46" r="4" fill="#00e676" opacity="0.9">
+    <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <text x="40" y="50" class="mono live">LIVE</text>
+
+  <line x1="30" y1="66" x2="790" y2="66" stroke="#2a2a4a" stroke-width="0.5"/>
+
+  <!-- Total hosts -->
+  <text x="410" y="100" text-anchor="middle" class="mono stat-big" filter="url(#glow)">234.83M</text>
+  <text x="410" y="116" text-anchor="middle" class="mono stat-label">OBSERVABLE HOSTS WORLDWIDE</text>
+
+  <line x1="30" y1="132" x2="790" y2="132" stroke="#2a2a4a" stroke-width="0.5"/>
+
+  <!-- LEFT: Regional Coverage -->
+  <text x="40" y="156" class="mono section">&#9672; REGIONAL COVERAGE</text>
+
+  <text x="40" y="182" class="mono label">NORTH AMERICA</text>
+  <text x="290" y="182" class="mono value" text-anchor="end">58.78M</text>
+  <g transform="translate(40, 188)"><rect x="0" y="0" width="180" height="10" rx="2" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/><rect x="0" y="0" width="122" height="10" rx="2" fill="url(#barGrad)"/></g>
+
+  <text x="40" y="216" class="mono label">EUROPE</text>
+  <text x="290" y="216" class="mono value" text-anchor="end">86.23M</text>
+  <g transform="translate(40, 222)"><rect x="0" y="0" width="180" height="10" rx="2" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/><rect x="0" y="0" width="180" height="10" rx="2" fill="url(#barGrad)"/></g>
+
+  <text x="40" y="250" class="mono label">ASIA-PACIFIC</text>
+  <text x="290" y="250" class="mono value" text-anchor="end">67.21M</text>
+  <g transform="translate(40, 256)"><rect x="0" y="0" width="180" height="10" rx="2" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/><rect x="0" y="0" width="140" height="10" rx="2" fill="url(#barGrad)"/></g>
+
+  <!-- RIGHT: Exposed Attack Surface -->
+  <text x="440" y="156" class="mono section">&#9672; EXPOSED ATTACK SURFACE</text>
+
+  <rect x="440" y="170" width="160" height="60" rx="4" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/>
+  <text x="520" y="192" text-anchor="middle" class="mono bright">4.08M</text>
+  <text x="520" y="206" text-anchor="middle" class="mono dim">RDP EXPOSED</text>
+
+  <rect x="615" y="170" width="160" height="60" rx="4" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/>
+  <text x="695" y="192" text-anchor="middle" class="mono bright">983.3K</text>
+  <text x="695" y="206" text-anchor="middle" class="mono dim">SMB EXPOSED</text>
+
+  <rect x="440" y="240" width="335" height="30" rx="4" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/>
+  <text x="460" y="260" class="mono warning">&#9888; TELNET STILL ACTIVE:</text>
+  <text x="670" y="260" class="mono bright">1.63M HOSTS</text>
+
+  <line x1="30" y1="290" x2="790" y2="290" stroke="#2a2a4a" stroke-width="0.5"/>
+
+  <!-- Bottom left: Active Campaigns -->
+  <text x="40" y="314" class="mono section">&#9672; ACTIVE CAMPAIGNS</text>
+
+  <rect x="40" y="326" width="340" height="36" rx="4" fill="#1a1a2e" stroke="#e63946" stroke-width="0.5" opacity="0.8"/>
+  <text x="55" y="349" class="mono accent">CVE-2026-1731</text>
+  <text x="200" y="349" class="mono dim">BeyondTrust RCE</text>
+  <text x="345" y="349" class="mono warning" text-anchor="end">CVSS 9.9</text>
+
+  <rect x="40" y="370" width="340" height="36" rx="4" fill="#1a1a2e" stroke="#ff6b35" stroke-width="0.5" opacity="0.6"/>
+  <text x="55" y="393" class="mono accent">CVE-2025-55182</text>
+  <text x="200" y="393" class="mono dim">Next.js Server Actions</text>
+  <text x="345" y="393" class="mono warning" text-anchor="end">HIGH</text>
+
+  <rect x="40" y="414" width="340" height="36" rx="4" fill="#1a1a2e" stroke="#ff6b35" stroke-width="0.5" opacity="0.4"/>
+  <text x="55" y="437" class="mono accent">ENVOY-JWT</text>
+  <text x="200" y="437" class="mono dim">Proxy Auth Bypass</text>
+  <text x="345" y="437" class="mono warning" text-anchor="end">HIGH</text>
+
+  <!-- Bottom right: Top Services -->
+  <text x="440" y="314" class="mono section">&#9672; TOP INTERNET SERVICES</text>
+  <g>
+    <text x="460" y="338" class="mono dim">&#9656; HTTP</text><text x="700" y="338" class="mono value" text-anchor="end">354.82M</text><text x="460" y="360" class="mono dim">&#9656; UNKNOWN</text><text x="700" y="360" class="mono value" text-anchor="end">66.15M</text><text x="460" y="382" class="mono dim">&#9656; SSH</text><text x="700" y="382" class="mono value" text-anchor="end">35.40M</text><text x="460" y="404" class="mono dim">&#9656; CWMP</text><text x="700" y="404" class="mono value" text-anchor="end">19.62M</text><text x="460" y="426" class="mono dim">&#9656; SNMP</text><text x="700" y="426" class="mono value" text-anchor="end">15.39M</text>
+  </g>
+
+  <!-- Footer -->
+  <line x1="30" y1="470" x2="790" y2="470" stroke="#2a2a4a" stroke-width="0.5"/>
+  <text x="410" y="492" text-anchor="middle" class="mono dim">DATA SOURCE: CENSYS UNIVERSAL INTERNET DATASET  &#183;  UPDATED 23 Feb 2026</text>
+  <text x="410" y="508" text-anchor="middle" class="mono dim">cybrdude // netguard24-7.com // attack surface management</text>
+
 </svg>
