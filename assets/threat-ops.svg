@@ -53,7 +53,7 @@
 
   <!-- Header -->
   <text x="410" y="38" text-anchor="middle" class="mono title" filter="url(#glow)">&#9670;  GLOBAL THREAT OPERATIONS CENTER  &#9670;</text>
-  <text x="410" y="54" text-anchor="middle" class="mono subtitle">CENSYS INTERNET INTELLIGENCE  //  2026-02-23 07:03 UTC</text>
+  <text x="410" y="54" text-anchor="middle" class="mono subtitle">CENSYS INTERNET INTELLIGENCE  //  2026-02-24 06:51 UTC</text>
 
   <!-- Live indicator -->
   <circle cx="30" cy="46" r="4" fill="#00e676" opacity="0.9">
@@ -64,7 +64,7 @@
   <line x1="30" y1="66" x2="790" y2="66" stroke="#2a2a4a" stroke-width="0.5"/>
 
   <!-- Total hosts -->
-  <text x="410" y="100" text-anchor="middle" class="mono stat-big" filter="url(#glow)">234.83M</text>
+  <text x="410" y="100" text-anchor="middle" class="mono stat-big" filter="url(#glow)">235.64M</text>
   <text x="410" y="116" text-anchor="middle" class="mono stat-label">OBSERVABLE HOSTS WORLDWIDE</text>
 
   <line x1="30" y1="132" x2="790" y2="132" stroke="#2a2a4a" stroke-width="0.5"/>
@@ -73,31 +73,31 @@
   <text x="40" y="156" class="mono section">&#9672; REGIONAL COVERAGE</text>
 
   <text x="40" y="182" class="mono label">NORTH AMERICA</text>
-  <text x="290" y="182" class="mono value" text-anchor="end">58.78M</text>
+  <text x="290" y="182" class="mono value" text-anchor="end">59.01M</text>
   <g transform="translate(40, 188)"><rect x="0" y="0" width="180" height="10" rx="2" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/><rect x="0" y="0" width="122" height="10" rx="2" fill="url(#barGrad)"/></g>
 
   <text x="40" y="216" class="mono label">EUROPE</text>
-  <text x="290" y="216" class="mono value" text-anchor="end">86.23M</text>
+  <text x="290" y="216" class="mono value" text-anchor="end">86.46M</text>
   <g transform="translate(40, 222)"><rect x="0" y="0" width="180" height="10" rx="2" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/><rect x="0" y="0" width="180" height="10" rx="2" fill="url(#barGrad)"/></g>
 
   <text x="40" y="250" class="mono label">ASIA-PACIFIC</text>
-  <text x="290" y="250" class="mono value" text-anchor="end">67.21M</text>
+  <text x="290" y="250" class="mono value" text-anchor="end">67.37M</text>
   <g transform="translate(40, 256)"><rect x="0" y="0" width="180" height="10" rx="2" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/><rect x="0" y="0" width="140" height="10" rx="2" fill="url(#barGrad)"/></g>
 
   <!-- RIGHT: Exposed Attack Surface -->
   <text x="440" y="156" class="mono section">&#9672; EXPOSED ATTACK SURFACE</text>
 
   <rect x="440" y="170" width="160" height="60" rx="4" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/>
-  <text x="520" y="192" text-anchor="middle" class="mono bright">4.08M</text>
+  <text x="520" y="192" text-anchor="middle" class="mono bright">4.11M</text>
   <text x="520" y="206" text-anchor="middle" class="mono dim">RDP EXPOSED</text>
 
   <rect x="615" y="170" width="160" height="60" rx="4" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/>
-  <text x="695" y="192" text-anchor="middle" class="mono bright">983.3K</text>
+  <text x="695" y="192" text-anchor="middle" class="mono bright">991.3K</text>
   <text x="695" y="206" text-anchor="middle" class="mono dim">SMB EXPOSED</text>
 
   <rect x="440" y="240" width="335" height="30" rx="4" fill="#1a1a2e" stroke="#2a2a4a" stroke-width="0.5"/>
   <text x="460" y="260" class="mono warning">&#9888; TELNET STILL ACTIVE:</text>
-  <text x="670" y="260" class="mono bright">1.63M HOSTS</text>
+  <text x="670" y="260" class="mono bright">1.64M HOSTS</text>
 
   <line x1="30" y1="290" x2="790" y2="290" stroke="#2a2a4a" stroke-width="0.5"/>
 
@@ -122,12 +122,12 @@
   <!-- Bottom right: Top Services -->
   <text x="440" y="314" class="mono section">&#9672; TOP INTERNET SERVICES</text>
   <g>
-    <text x="460" y="338" class="mono dim">&#9656; HTTP</text><text x="700" y="338" class="mono value" text-anchor="end">354.82M</text><text x="460" y="360" class="mono dim">&#9656; UNKNOWN</text><text x="700" y="360" class="mono value" text-anchor="end">66.15M</text><text x="460" y="382" class="mono dim">&#9656; SSH</text><text x="700" y="382" class="mono value" text-anchor="end">35.40M</text><text x="460" y="404" class="mono dim">&#9656; CWMP</text><text x="700" y="404" class="mono value" text-anchor="end">19.62M</text><text x="460" y="426" class="mono dim">&#9656; SNMP</text><text x="700" y="426" class="mono value" text-anchor="end">15.39M</text>
+    <text x="460" y="338" class="mono dim">&#9656; HTTP</text><text x="700" y="338" class="mono value" text-anchor="end">355.42M</text><text x="460" y="360" class="mono dim">&#9656; UNKNOWN</text><text x="700" y="360" class="mono value" text-anchor="end">66.22M</text><text x="460" y="382" class="mono dim">&#9656; SSH</text><text x="700" y="382" class="mono value" text-anchor="end">35.49M</text><text x="460" y="404" class="mono dim">&#9656; CWMP</text><text x="700" y="404" class="mono value" text-anchor="end">19.77M</text><text x="460" y="426" class="mono dim">&#9656; SNMP</text><text x="700" y="426" class="mono value" text-anchor="end">15.41M</text>
   </g>
 
   <!-- Footer -->
   <line x1="30" y1="470" x2="790" y2="470" stroke="#2a2a4a" stroke-width="0.5"/>
-  <text x="410" y="492" text-anchor="middle" class="mono dim">DATA SOURCE: CENSYS UNIVERSAL INTERNET DATASET  &#183;  UPDATED 23 Feb 2026</text>
+  <text x="410" y="492" text-anchor="middle" class="mono dim">DATA SOURCE: CENSYS UNIVERSAL INTERNET DATASET  &#183;  UPDATED 24 Feb 2026</text>
   <text x="410" y="508" text-anchor="middle" class="mono dim">cybrdude // netguard24-7.com // attack surface management</text>
 
 </svg>
