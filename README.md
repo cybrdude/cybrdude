@@ -29,10 +29,7 @@ Cybersecurity Practitioner, Vulnerability Researcher, and open-source security c
 
 | DESIGNATION | TARGET | SEVERITY | STATUS |
 |:--|:--|:--|:--|
-| `CVE-2026-1731` | BeyondTrust RS/PRA — Pre-Auth RCE | 🔴 **CVSS 9.9** | [SCANNER DEPLOYED](https://github.com/cybrdude/cve-2026-1731-scanner) |
-| `CVE-2025-55182` | Next.js Server Actions | 🟠 **HIGH** | EXPLOITATION RESEARCH |
-| `ENVOY-JWT` | Envoy Proxy Auth Bypass | 🟠 **HIGH** | VALIDATION IN PROGRESS |
-| `OSV-SCALIBR` | PayPal Secret Detector Plugin | 🟢 **PRP** | [CONTRIBUTING](https://github.com/google/osv-scalibr/issues/1027) |
+
 
 ---
 
