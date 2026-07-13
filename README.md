@@ -13,7 +13,7 @@
 
 ### `RESEARCH FOCUS`
 
-`Attack Surface Management` &nbsp;·&nbsp; `Service Mesh Security` &nbsp;·&nbsp; `Authorization Boundaries` &nbsp;·&nbsp; `Coordinated Vulnerability Disclosure`
+`Attack Surface Management` &nbsp;·&nbsp; `Service Mesh Security` &nbsp;·&nbsp; `ML Runtime Security` &nbsp;·&nbsp; `Authorization Boundaries` &nbsp;·&nbsp; `Coordinated Vulnerability Disclosure`
 
 ---
 
@@ -27,14 +27,29 @@ Founder of **[NetGuard 24/7 LLC](https://netguard24-7.com)** &nbsp;·&nbsp; coor
 
 ### `COORDINATED DISCLOSURES`
 
-Selected upstream remediations and CVEs where I authored or co-authored the patch, the advisory, or both.
+Selected upstream remediations and coordinated disclosures where I authored or co-authored the patch, the advisory, or both.
 
-| Advisory | Project | Status | Disposition |
+| Finding | Project | Status | Disposition |
 |:--|:--|:--|:--|
-| [**GHSA-gr4r-79wp-5w3x**](https://github.com/envoyproxy/envoy/security/advisories/GHSA-gr4r-79wp-5w3x) · CWE-287 · CVSS 8.1 | [envoyproxy/envoy](https://github.com/envoyproxy/envoy) | ✅ Merged | [PR #43630](https://github.com/envoyproxy/envoy/pull/43630) · [`6d005fe`](https://github.com/envoyproxy/envoy/commit/6d005fef127c86b38a4a902fbc8333bd113e5c8b) |
+| **Envoy `jwt_authn` authentication bypass** · CWE-287 | [envoyproxy/envoy](https://github.com/envoyproxy/envoy) | ✅ Merged | [PR #43630](https://github.com/envoyproxy/envoy/pull/43630) · [`6d005fe`](https://github.com/envoyproxy/envoy/commit/6d005fef127c86b38a4a902fbc8333bd113e5c8b) |
 | **CERT/CC VU#692236** · multi-vendor coordination | React ecosystem | 🟡 Coordinated | [reactghost.com](https://reactghost.com) |
 
-**Featured: Envoy `jwt_authn` confused-deputy fix.** Authored the fix for an authorization-boundary failure in Envoy's JWT filter where `extract_only_without_validation` paired with `claim_to_headers` produced HTTP headers indistinguishable from cryptographically validated ones. Originally reported via Envoy's security process; the public PR added a `verification_status_header` field with runtime-guarded staged rollout. Merged into `main` on May 4, 2026.
+**Featured: Envoy `jwt_authn` confused-deputy fix.** Authored the fix for an authorization-boundary failure in Envoy's JWT filter where `extract_only_without_validation` paired with `claim_to_headers` produced HTTP headers indistinguishable from cryptographically validated ones, letting a forged `alg:none` token satisfy downstream RBAC. Reported through Envoy's private security advisory process (GHSA-gr4r-79wp-5w3x, reporter credit accepted); the public PR added a `verification_status_header` field with runtime-guarded staged rollout. Merged into `main` on May 4, 2026 as commit `6d005fe`.
+
+---
+
+### `UPSTREAM SECURITY WORK IN REVIEW`
+
+Active coordinated-disclosure patches submitted upstream to Google and OSS projects. States current as of July 2026.
+
+| Contribution | Project | State | Reference |
+|:--|:--|:--|:--|
+| TFLite uint64 external-offset overflow hardening · CWE-190 | [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) | Approved, ready to pull; imported to LiteRT | [PR #116631](https://github.com/tensorflow/tensorflow/pull/116631) · [LiteRT #8492](https://github.com/google-ai-edge/LiteRT/pull/8492) |
+| PayPal REST API secret detector + OAuth2 validator | [google/osv-scalibr](https://github.com/google/osv-scalibr) | In review | [PR #1815](https://github.com/google/osv-scalibr/pull/1815) |
+| `flatbuffer_utils` out-of-range Buffer offset/size validation | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | Open | [PR #7028](https://github.com/google-ai-edge/LiteRT/pull/7028) |
+| `interpreter_builder` uint64 overflow (LiteRT-side) | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | Open | [PR #8183](https://github.com/google-ai-edge/LiteRT/pull/8183) |
+
+Additional memory-safety and path-traversal disclosures in TensorFlow, LiteRT, and MediaPipe are under vendor review.
 
 ---
 
@@ -42,18 +57,17 @@ Selected upstream remediations and CVEs where I authored or co-authored the patc
 
 | Project | Description | Stack |
 |:--|:--|:--|
-| [**CitrixScan**](https://github.com/cybrdude/citrixscan) | Citrix NetScaler security scanner. 25 CVEs, 10 fingerprint vectors, GZIP timestamp analysis, IoC detection. Submitted to Kali Linux. | Python |
+| [**CitrixScan**](https://github.com/cybrdude/citrixscan) | Citrix NetScaler ADC/Gateway security scanner. 25 CVEs, 10 fingerprint vectors, GZIP timestamp analysis, IoC detection. | Python |
+| [**cve-2026-1731-scanner**](https://github.com/cybrdude/cve-2026-1731-scanner) | Passive scanner for CVE-2026-1731 (BeyondTrust Remote Support / PRA pre-auth RCE). Defensive and educational use. | Python |
 | [**Envoy `jwt_authn` patch**](https://github.com/envoyproxy/envoy/pull/43630) | Upstream contribution: `verification_status_header` field, runtime guard, RBAC integration example, security-considerations docs. | C++ |
-
-
 
 ### `GITHUB TELEMETRY`
 
 <div align="center">
 
 <a href="https://github.com/cybrdude">
-  <img height="165em" src="https://github-readme-stats.vercel.app/api?username=cybrdude&show_icons=true&bg_color=0A1F4D&hide_border=true&icon_color=F4C967&title_color=F4C967&text_color=A8C0E0&ring_color=F4C967" />
-  <img height="165em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=cybrdude&layout=compact&bg_color=0A1F4D&hide_border=true&title_color=F4C967&text_color=A8C0E0" />
+<img height="165em" src="https://github-readme-stats.vercel.app/api?username=cybrdude&show_icons=true&bg_color=0A1F4D&hide_border=true&icon_color=F4C967&title_color=F4C967&text_color=A8C0E0&ring_color=F4C967" />
+<img height="165em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=cybrdude&layout=compact&bg_color=0A1F4D&hide_border=true&title_color=F4C967&text_color=A8C0E0" />
 </a>
 <br/>
 <img src="https://streak-stats.demolab.com/?user=cybrdude&background=0A1F4D&hide_border=true&stroke=F4C967&ring=F4C967&fire=E0A832&currStreakLabel=F4C967&sideLabels=A8C0E0&currStreakNum=FFFFFF&sideNums=FFFFFF&dates=7AA0DC" />
