@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Share+Tech+Mono&weight=400&size=22&duration=3000&pause=1500&color=F4C967&center=true&vCenter=true&multiline=true&repeat=true&random=false&width=720&height=80&lines=cybrdude+%2F%2F+Layau+Eulizier+Jr.;vulnerability+research+%E2%80%A2+attack+surface+management;coordinated+disclosure+%E2%80%A2+open-source+security+tooling)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Share+Tech+Mono&weight=400&size=22&duration=3000&pause=1500&color=F4C967&center=true&vCenter=true&multiline=true&repeat=true&random=false&width=720&height=80&lines=cybrdude+%2F%2F+Layau+Eulizier+Jr.;vulnerability+research+%E2%80%A2+attack+surface+management;agentic+AI+security+%E2%80%A2+authorization+boundaries;coordinated+disclosure+%E2%80%A2+open-source+security+tooling)](https://git.io/typing-svg)
 
 ---
 <p>
@@ -13,7 +13,7 @@
 
 ### `RESEARCH FOCUS`
 
-`Attack Surface Management` &nbsp;·&nbsp; `Service Mesh Security` &nbsp;·&nbsp; `ML Runtime Security` &nbsp;·&nbsp; `Authorization Boundaries` &nbsp;·&nbsp; `Coordinated Vulnerability Disclosure`
+`Agentic AI Security` &nbsp;·&nbsp; `Authorization Boundaries` &nbsp;·&nbsp; `Attack Surface Management` &nbsp;·&nbsp; `Service Mesh Security` &nbsp;·&nbsp; `ML Runtime Security` &nbsp;·&nbsp; `Coordinated Vulnerability Disclosure`
 
 ---
 
@@ -21,18 +21,28 @@
 
 Senior cybersecurity practitioner, independent vulnerability researcher, and open-source security tooling contributor.
 
+Current research centers on **trust boundaries in multi-agent AI systems**; how autonomous agents, service identities, and humans are distinguished (or fail to be distinguished) by the authorization models that gate consequential actions.
+
 Founder of **[NetGuard 24/7 LLC](https://netguard24-7.com)** &nbsp;·&nbsp; coordinated disclosure, cybersecurity tooling, threat intelligence.
 
 ---
 
 ### `COORDINATED DISCLOSURES`
 
-Selected upstream remediations and coordinated disclosures where I authored or co-authored the patch, the advisory, or both.
+Upstream remediations where I authored or co-authored the patch, the advisory, or both.
 
 | Finding | Project | Status | Disposition |
 |:--|:--|:--|:--|
+| **ADK A2A human-in-the-loop confused deputy** · CWE-346 | [google/adk-python](https://github.com/google/adk-python) | ✅ Merged | [PR #6462](https://github.com/google/adk-python/pull/6462) · [`9e9eaa6`](https://github.com/google/adk-python/commit/9e9eaa69bdcc16f004af9c63f40f1dae6404c29b) |
 | **Envoy `jwt_authn` authentication bypass** · CWE-287 | [envoyproxy/envoy](https://github.com/envoyproxy/envoy) | ✅ Merged | [PR #43630](https://github.com/envoyproxy/envoy/pull/43630) · [`6d005fe`](https://github.com/envoyproxy/envoy/commit/6d005fef127c86b38a4a902fbc8333bd113e5c8b) |
+| **TFLite uint64 external-offset overflow** · CWE-190 | [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) | ✅ Merged | [PR #116631](https://github.com/tensorflow/tensorflow/pull/116631) |
+| **`flatbuffer_utils` out-of-range Buffer offset/size** | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | ✅ Merged | [PR #7028](https://github.com/google-ai-edge/LiteRT/pull/7028) |
 | **CERT/CC VU#692236** · multi-vendor coordination | React ecosystem | 🟡 Coordinated | [reactghost.com](https://reactghost.com) |
+
+**Featured: Google ADK human-in-the-loop bypass over A2A.** Identified and authored the fix for a trust-boundary failure in Google's Agent Development Kit, where a tool confirmation arriving over the Agent-to-Agent protocol could satisfy the human-approval gate gating confirmation-protected tools. The confirmation check keyed on the protocol message role (`role="user"`) rather than on message provenance, so a remote agent could effectively self-approve actions that were designed to require a person. Reported through Google's VRP; public issue [#6461](https://github.com/google/adk-python/issues/6461), fix merged to `main` as [`9e9eaa6`](https://github.com/google/adk-python/commit/9e9eaa69bdcc16f004af9c63f40f1dae6404c29b). The patch rejects A2A-originated tool confirmations so machine provenance is preserved across the boundary.
+
+> **Protocol role ≠ security principal ≠ human authority.**
+> As agentic systems mature, authorization models have to treat autonomous agents as distinct actors and read the *absence* of verified human provenance as denial, not consent.
 
 **Featured: Envoy `jwt_authn` confused-deputy fix.** Authored the fix for an authorization-boundary failure in Envoy's JWT filter where `extract_only_without_validation` paired with `claim_to_headers` produced HTTP headers indistinguishable from cryptographically validated ones, letting a forged `alg:none` token satisfy downstream RBAC. Reported through Envoy's private security advisory process (GHSA-gr4r-79wp-5w3x, reporter credit accepted); the public PR added a `verification_status_header` field with runtime-guarded staged rollout. Merged into `main` on May 4, 2026 as commit `6d005fe`.
 
@@ -40,14 +50,13 @@ Selected upstream remediations and coordinated disclosures where I authored or c
 
 ### `UPSTREAM SECURITY WORK IN REVIEW`
 
-Active coordinated-disclosure patches submitted upstream to Google and OSS projects. States current as of July 2026.
+Active coordinated-disclosure patches submitted upstream to Google and OSS projects. States current as of August 2026.
 
 | Contribution | Project | State | Reference |
 |:--|:--|:--|:--|
-| TFLite uint64 external-offset overflow hardening · CWE-190 | [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) | Approved, ready to pull; imported to LiteRT | [PR #116631](https://github.com/tensorflow/tensorflow/pull/116631) · [LiteRT #8492](https://github.com/google-ai-edge/LiteRT/pull/8492) |
 | PayPal REST API secret detector + OAuth2 validator | [google/osv-scalibr](https://github.com/google/osv-scalibr) | In review | [PR #1815](https://github.com/google/osv-scalibr/pull/1815) |
-| `flatbuffer_utils` out-of-range Buffer offset/size validation | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | Open | [PR #7028](https://github.com/google-ai-edge/LiteRT/pull/7028) |
 | `interpreter_builder` uint64 overflow (LiteRT-side) | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | Open | [PR #8183](https://github.com/google-ai-edge/LiteRT/pull/8183) |
+| TFLite uint64 overflow / LiteRT import of TF #116631 | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | Open | [PR #8492](https://github.com/google-ai-edge/LiteRT/pull/8492) |
 
 Additional memory-safety and path-traversal disclosures in TensorFlow, LiteRT, and MediaPipe are under vendor review.
 
@@ -59,6 +68,7 @@ Additional memory-safety and path-traversal disclosures in TensorFlow, LiteRT, a
 |:--|:--|:--|
 | [**CitrixScan**](https://github.com/cybrdude/citrixscan) | Citrix NetScaler ADC/Gateway security scanner. 25 CVEs, 10 fingerprint vectors, GZIP timestamp analysis, IoC detection. | Python |
 | [**cve-2026-1731-scanner**](https://github.com/cybrdude/cve-2026-1731-scanner) | Passive scanner for CVE-2026-1731 (BeyondTrust Remote Support / PRA pre-auth RCE). Defensive and educational use. | Python |
+| [**ADK A2A confirmation patch**](https://github.com/google/adk-python/pull/6462) | Upstream contribution: reject tool confirmations arriving over A2A, preserving human-approval provenance for guarded tools. | Python |
 | [**Envoy `jwt_authn` patch**](https://github.com/envoyproxy/envoy/pull/43630) | Upstream contribution: `verification_status_header` field, runtime guard, RBAC integration example, security-considerations docs. | C++ |
 
 ### `GITHUB TELEMETRY`
