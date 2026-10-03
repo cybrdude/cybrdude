@@ -33,13 +33,13 @@ Upstream remediations where I authored or co-authored the patch, the advisory, o
 
 | Finding | Project | Status | Disposition |
 |:--|:--|:--|:--|
-| **ADK A2A human-in-the-loop confused deputy** · CWE-346 | [google/adk-python](https://github.com/google/adk-python) | ✅ Merged | [PR #6462](https://github.com/google/adk-python/pull/6462) · [`9e9eaa6`](https://github.com/google/adk-python/commit/9e9eaa69bdcc16f004af9c63f40f1dae6404c29b) |
+| **ADK A2A human-in-the-loop confused deputy** · CWE-346 | [google/adk-python](https://github.com/google/adk-python) | 🟡 Merged · reverted · successor in review | [PR #6462](https://github.com/google/adk-python/pull/6462) · [`9e9eaa6`](https://github.com/google/adk-python/commit/9e9eaa69bdcc16f004af9c63f40f1dae6404c29b) · revert [`9a32eba`](https://github.com/google/adk-python/commit/9a32eba1e271981fd079bdee489b9159c6ecc72a) · [PR #7134](https://github.com/google/adk-python/pull/7134) |
 | **Envoy `jwt_authn` authentication bypass** · CWE-287 | [envoyproxy/envoy](https://github.com/envoyproxy/envoy) | ✅ Merged | [PR #43630](https://github.com/envoyproxy/envoy/pull/43630) · [`6d005fe`](https://github.com/envoyproxy/envoy/commit/6d005fef127c86b38a4a902fbc8333bd113e5c8b) |
-| **TFLite uint64 external-offset overflow** · CWE-190 | [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) | ✅ Merged | [PR #116631](https://github.com/tensorflow/tensorflow/pull/116631) |
-| **`flatbuffer_utils` out-of-range Buffer offset/size** | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | ✅ Merged | [PR #7028](https://github.com/google-ai-edge/LiteRT/pull/7028) |
+| **TFLite uint64 external-offset overflow** · CWE-190 | [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) · [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | 🟡 Fixed upstream · tests and fuzz target in review | [#116632](https://github.com/tensorflow/tensorflow/issues/116632) · [PR #116631](https://github.com/tensorflow/tensorflow/pull/116631) · [PR #10223](https://github.com/google-ai-edge/LiteRT/pull/10223) · [PR #123123](https://github.com/tensorflow/tensorflow/pull/123123) |
+| **`flatbuffer_utils` out-of-range Buffer offset/size** | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | 🟡 Approved · awaiting merge | [PR #7028](https://github.com/google-ai-edge/LiteRT/pull/7028) |
 | **CERT/CC VU#692236** · multi-vendor coordination | React ecosystem | 🟡 Coordinated | [reactghost.com](https://reactghost.com) |
 
-**Featured: Google ADK human-in-the-loop bypass over A2A.** Identified and authored the fix for a trust-boundary failure in Google's Agent Development Kit, where a tool confirmation arriving over the Agent-to-Agent protocol could satisfy the human-approval gate gating confirmation-protected tools. The confirmation check keyed on the protocol message role (`role="user"`) rather than on message provenance, so a remote agent could effectively self-approve actions that were designed to require a person. Reported through Google's VRP; public issue [#6461](https://github.com/google/adk-python/issues/6461), fix merged to `main` as [`9e9eaa6`](https://github.com/google/adk-python/commit/9e9eaa69bdcc16f004af9c63f40f1dae6404c29b). The patch rejects A2A-originated tool confirmations so machine provenance is preserved across the boundary.
+**Featured: Google ADK human-in-the-loop bypass over A2A.** Identified and authored the fix for a trust-boundary failure in Google's Agent Development Kit, where a tool confirmation arriving over the Agent-to-Agent protocol could satisfy the human-approval gate gating confirmation-protected tools. The confirmation check keyed on the protocol message role (`role="user"`) rather than on message provenance, so a remote agent could effectively self-approve actions that were designed to require a person. Reported through Google's VRP; public issue [#6461](https://github.com/google/adk-python/issues/6461), fix merged to `main` as [`9e9eaa6`](https://github.com/google/adk-python/commit/9e9eaa69bdcc16f004af9c63f40f1dae6404c29b). The patch rejects A2A-originated tool confirmations so machine provenance is preserved across the boundary. That first fix was reverted on Aug 20, 2026 ([`9a32eba`](https://github.com/google/adk-python/commit/9a32eba1e271981fd079bdee489b9159c6ecc72a)) after it blocked legitimate confirmations; the successor, [PR #7134](https://github.com/google/adk-python/pull/7134), replaces the channel heuristic with a `CallerPrincipal` carried on the invocation context: the serving layer records whether it authenticated the caller, and the confirmation processor refuses an approval that lacks verified human provenance, with strict mode behind the feature registry. It is rebased on current `main` and in review.
 
 > **Protocol role ≠ security principal ≠ human authority.**
 > As agentic systems mature, authorization models have to treat autonomous agents as distinct actors and read the *absence* of verified human provenance as denial, not consent.
@@ -50,13 +50,14 @@ Upstream remediations where I authored or co-authored the patch, the advisory, o
 
 ### `UPSTREAM SECURITY WORK IN REVIEW`
 
-Active coordinated-disclosure patches submitted upstream to Google and OSS projects. States current as of August 2026.
+Active coordinated-disclosure patches submitted upstream to Google and OSS projects. States current as of October 2026.
 
 | Contribution | Project | State | Reference |
 |:--|:--|:--|:--|
+| TFLite model-load / interpreter fuzz target + overflow-safe `interpreter_builder` bounds checks | [tensorflow/tensorflow](https://github.com/tensorflow/tensorflow) | In review | [PR #123123](https://github.com/tensorflow/tensorflow/pull/123123) |
+| `tflite::Verify()` regression tests for the uint64 external-offset wrap | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | In review | [PR #10223](https://github.com/google-ai-edge/LiteRT/pull/10223) |
+| ADK `CallerPrincipal` gate for human-in-the-loop confirmations | [google/adk-python](https://github.com/google/adk-python) | In review | [PR #7134](https://github.com/google/adk-python/pull/7134) |
 | PayPal REST API secret detector + OAuth2 validator | [google/osv-scalibr](https://github.com/google/osv-scalibr) | In review | [PR #1815](https://github.com/google/osv-scalibr/pull/1815) |
-| `interpreter_builder` uint64 overflow (LiteRT-side) | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | Open | [PR #8183](https://github.com/google-ai-edge/LiteRT/pull/8183) |
-| TFLite uint64 overflow / LiteRT import of TF #116631 | [google-ai-edge/LiteRT](https://github.com/google-ai-edge/LiteRT) | Open | [PR #8492](https://github.com/google-ai-edge/LiteRT/pull/8492) |
 
 Additional memory-safety and path-traversal disclosures in TensorFlow, LiteRT, and MediaPipe are under vendor review.
 
@@ -68,7 +69,8 @@ Additional memory-safety and path-traversal disclosures in TensorFlow, LiteRT, a
 |:--|:--|:--|
 | [**CitrixScan**](https://github.com/cybrdude/citrixscan) | Citrix NetScaler ADC/Gateway security scanner. 25 CVEs, 10 fingerprint vectors, GZIP timestamp analysis, IoC detection. | Python |
 | [**cve-2026-1731-scanner**](https://github.com/cybrdude/cve-2026-1731-scanner) | Passive scanner for CVE-2026-1731 (BeyondTrust Remote Support / PRA pre-auth RCE). Defensive and educational use. | Python |
-| [**ADK A2A confirmation patch**](https://github.com/google/adk-python/pull/6462) | Upstream contribution: reject tool confirmations arriving over A2A, preserving human-approval provenance for guarded tools. | Python |
+| [**ADK caller-principal gate**](https://github.com/google/adk-python/pull/7134) | Upstream contribution: `CallerPrincipal` on the invocation context, populated at the A2A edge, so confirmation-protected tools refuse approvals without verified human provenance. | Python |
+| [**TFLite interpreter fuzz target**](https://github.com/tensorflow/tensorflow/pull/123123) | Upstream contribution: FuzzTest harness for model load, interpreter build and invoke, plus overflow-safe external-offset bounds checks in `interpreter_builder.cc`. | C++ |
 | [**Envoy `jwt_authn` patch**](https://github.com/envoyproxy/envoy/pull/43630) | Upstream contribution: `verification_status_header` field, runtime guard, RBAC integration example, security-considerations docs. | C++ |
 
 ### `GITHUB TELEMETRY`
