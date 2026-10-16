@@ -19,7 +19,7 @@
 
 ### `OPERATOR PROFILE`
 
-Senior cybersecurity practitioner, independent vulnerability researcher, and open-source security tooling contributor.
+AI incident manager, cybersecurity practitioner, independent vulnerability researcher, and open-source security tooling contributor.
 
 Current research centers on **trust boundaries in multi-agent AI systems**; how autonomous agents, service identities, and humans are distinguished (or fail to be distinguished) by the authorization models that gate consequential actions.
 
